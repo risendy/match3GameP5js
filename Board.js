@@ -2,15 +2,23 @@ var cols = 8;
 var rows = 8;
 var tileSize = 32;
 var offset = 1.5;
+
+var offsetX = 115;
+var offsetY = 25;
+
 var clickedPieces = [];
 var grid = [];
 var activeTile1;
 var activeTile2;
 var swapCompleted = false;
+var backgroundImage;
 
 class Board {
-  constructor() {
+  constructor(sketch) {
+    this.sketch = sketch;
+
     this.setupGrid();
+    backgroundImage = this.sketch.loadImage('assets/img/chalkboard-517818_640.jpg');
   }
 
   setupGrid() {
@@ -19,17 +27,18 @@ class Board {
 
       for (let j = 0; j < rows; j++) {
         grid[i][j] = new Piece(
-            i * tileSize,
-            j * tileSize,
-            i,
-            j,
-            floor(random(1, 7)),
-            false
+          i * tileSize + offsetX,
+          j * tileSize + offsetY,
+          i,
+          j,
+          this.sketch.floor(this.sketch.random(1, 7)),
+          false,
+          this.sketch
         )
       }
     }
 
-    while (this.getMatches().length > 0){
+    while (this.getMatches().length > 0) {
       this.removeTiles(this.getMatches());
       this.resetTile();
       this.fillTile()
@@ -38,10 +47,9 @@ class Board {
   }
 
   drawBackgroundBox() {
-    push();
-    fill(0);
-    rect(0, 0, 390, 390);
-    pop();
+    backgroundImage.resize(430, 425);
+    this.sketch.image(backgroundImage, 150, 15);
+    //this.sketch.rect(165, 30, 400, 400);
   }
 
   show() {
@@ -51,8 +59,7 @@ class Board {
     for (let i = 0; i < cols; i++) {
       for (let j = 0; j < rows; j++) {
         if (grid[i][j]) {
-          if (grid[i][j].moving)
-          {
+          if (grid[i][j].moving) {
             moving = true;
           }
 
@@ -62,15 +69,11 @@ class Board {
       }
     }
 
-    //this.checkMatches();
-    this.resetTile();
-    this.fillTile();
-
-    if (!moving)
-    {
+    if (!moving) {
       this.checkMatches();
+      this.resetTile();
+      this.fillTile();
     }
-    //this.checkMatches();
   }
 
   getMatches() {
@@ -159,12 +162,13 @@ class Board {
         if (grid[i][j] == null) {
           //Found a blank spot so lets add animate a tile there
           var tile = new Piece(
-              i * tileSize,
-              j * tileSize,
-              i,
-              j,
-              floor(random(1, 7)),
-              false
+            i * tileSize + offsetX,
+            j * tileSize + offsetY,
+            i,
+            j,
+            this.sketch.floor(this.sketch.random(1, 7)),
+            false,
+            this.sketch
           );
 
           //And also update our "theoretical" grid
@@ -241,8 +245,7 @@ class Board {
       let piece2Row = piece2.row;
       let tile2 = grid[piece2Col][piece2Row];
 
-      if (grid[piece1Col][piece1Row] && grid[piece2Col][piece2Row])
-      {
+      if (grid[piece1Col][piece1Row] && grid[piece2Col][piece2Row]) {
         grid[piece1Col][piece1Row] = tile2;
         grid[piece2Col][piece2Row] = tile1;
 
@@ -271,7 +274,7 @@ class Board {
     for (let i = 0; i < rows; i++) {
       for (let j = 0; j < cols; j++) {
         if (grid[i][j]) {
-          hitPiece = collidePointRect(mouseX, mouseY, grid[i][j].x * offset, grid[i][j].y * offset, 32, 32);
+          hitPiece = this.sketch.collidePointRect(this.sketch.mouseX, this.sketch.mouseY, grid[i][j].x * offset, grid[i][j].y * offset, 32, 32);
 
           if (hitPiece) {
             grid[i][j].clicked = true;
@@ -293,7 +296,9 @@ class Board {
         piece.clicked = false;
       });
 
-      this.swapPieces(clickedPieces[0], clickedPieces[1]);
+      if (this.sketch.abs(clickedPieces[0].col - clickedPieces[1].col) < 2 && this.sketch.abs(clickedPieces[0].row - clickedPieces[1].row) < 2) {
+        this.swapPieces(clickedPieces[0], clickedPieces[1]);
+      }
 
       clickedPieces = [];
     }
@@ -307,6 +312,14 @@ class Board {
         let pieceRow = arr[i][j].row;
 
         grid[pieceCol][pieceRow] = null;
+
+        if (scoreElem) {
+          let prevScore = parseInt(scoreElem.html());
+          scoreElem.html(prevScore + 100);
+        }
+
+        //const prevScore = parseInt(scoreSpan.html().substring(8));
+        //scoreSpan.html(prevScore + 1);
       }
     }
   }

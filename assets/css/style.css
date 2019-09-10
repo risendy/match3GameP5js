@@ -1,0 +1,63 @@
+html, body {
+  margin: 0;
+  padding: 0;
+}
+canvas {
+  display: block;
+}
+.btn-circle {
+ width:  120px;
+ height: 55px;
+ border:5px solid #428bca;
+ border-radius: 50%;
+ background-color: #428bca;
+ color:white;
+ font-size: 14pt;
+ font-family: 'Comic Sans MS'
+}
+.btn-circle-menu {
+ width:  85px;
+ height: 55px;
+ border:5px solid #428bca;
+ border-radius: 50%;
+ background-color: #428bca;
+ color:white;
+ font-size: 14pt;
+ font-family: 'Comic Sans MS'
+}
+.btn-circle:disabled {
+ width:  35px;
+ height: 35px;
+ border:5px solid #e6e6e6;
+ border-radius: 50%;
+ background-color: #e6e6e6;
+ color:black;
+ font-family: 'Comic Sans MS'
+}
+.try-again-btn {
+   border:5px solid #cfdcec;
+   border-radius: 50%;
+   font-family: 'Comic Sans MS'
+}
+.go-back-btn {
+   border:5px solid #cfdcec;
+   border-radius: 50%;
+   font-family: 'Comic Sans MS'
+}
+.game-progress{
+  border:5px solid #cfdcec;
+  font-family: 'Comic Sans MS'
+}
+.death-count-before {
+  font-family: 'Comic Sans MS'
+}
+.death-count-after{
+  font-family: 'Comic Sans MS'
+}
+.score-span{
+  color:white;
+  font-size: 32px;
+  font-family: 'Comic Sans MS';
+  padding-left: 0px;
+}
+

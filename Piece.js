@@ -1,5 +1,7 @@
 class Piece {
-  constructor(x, y, col, row, kind, match) {
+  constructor(x, y, col, row, kind, match, sketch) {
+    this.sketch = sketch;
+
     this.x = x;
     this.y = y;
     this.col = col;
@@ -15,14 +17,13 @@ class Piece {
     this.counter = 0;
     this.clicked = false;
     this.moving = false;
-    this.counter = 0;
 
-    this.piece1 = loadImage('assets/img/element_yellow_diamond.png');
-    this.piece2 = loadImage('assets/img/element_blue_polygon.png');
-    this.piece3 = loadImage('assets/img/element_green_diamond.png');
-    this.piece4 = loadImage('assets/img/element_grey_polygon.png');
-    this.piece5 = loadImage('assets/img/element_purple_diamond.png');
-    this.piece6 = loadImage('assets/img/element_red_polygon.png');
+    this.piece1 = this.sketch.loadImage('assets/img/element_yellow_diamond.png');
+    this.piece2 = this.sketch.loadImage('assets/img/element_blue_polygon.png');
+    this.piece3 = this.sketch.loadImage('assets/img/element_green_diamond.png');
+    this.piece4 = this.sketch.loadImage('assets/img/element_grey_polygon.png');
+    this.piece5 = this.sketch.loadImage('assets/img/element_purple_diamond.png');
+    this.piece6 = this.sketch.loadImage('assets/img/element_red_polygon.png');
   }
 
   getPieceImg(kind) {
@@ -69,46 +70,50 @@ class Piece {
         this.yTo = -1;
         this.counter = 0;
         board.removeTiles(matches);
-        //board.checkMatches();
       }
-
-      //this.xTo = -1;
-      //this.yTo = -1;
     }
 
     if (this.xTo > -1 && this.yTo > -1) {
 
       if (this.x > this.xTo) {
-        this.x -= 2;
+        this.x -= 3;
+        
+        if (this.x < this.xTo) this.x=this.xTo
       }
       if (this.x < this.xTo) {
-        this.x += 2;
+        this.x += 3;
+        
+        if (this.x > this.xTo) this.x=this.xTo
       }
 
       if (this.y > this.yTo) {
-        this.y -= 2;
+        this.y -= 3;
+        
+        if (this.y < this.yTo) this.y=this.yTo
       }
       if (this.y < this.yTo) {
-        this.y += 2;
+        this.y += 3;
+        
+        if (this.y > this.yTo) this.y=this.yTo
       }
     }
 
-    while (this.canMove()) {
-      grid[this.col][this.row + 1] = this;
-      grid[this.col][this.row] = null;
+//     while (this.canMove()) {
+//       grid[this.col][this.row + 1] = this;
+//       grid[this.col][this.row] = null;
+     
+//       //this.yTo = this.y + 32;
+//       this.y = this.y + 32;
+//       this.row++;
 
-      //this.yTo = this.y + 32;
-      this.y = this.y + 32;
-      this.row++;
-
-      this.moving = true;
-    }
+//       this.moving = true;
+//     }
   }
 
   canMove() {
     if (this.row + 1 == rows) {
       this.moving = false;
-
+      
       return false;
     }
 
@@ -119,21 +124,21 @@ class Piece {
 
   show() {
     if (this.clicked) {
-      push();
-      noFill();
-      stroke(255);
-      rect(this.x * offset, this.y * offset, 32 * offset, 32 * offset);
-      pop();
+      this.sketch.push();
+      this.sketch.noFill();
+      this.sketch.stroke(255);
+      this.sketch.rect(this.x * offset, this.y * offset, 32 * offset, 32 * offset);
+      this.sketch.pop();
     }
-
+    
     if (this.moving == false){
-      //board.checkMatches();
+       //board.checkMatches();
     }
 
     if (grid[this.col][this.row]) {
       let imageObj = this.getPieceImg(grid[this.col][this.row].kind);
 
-      image(imageObj, this.x * offset, this.y * offset);
+      this.sketch.image(imageObj, this.x * offset, this.y * offset);
     }
 
   }
