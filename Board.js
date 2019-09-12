@@ -1,5 +1,5 @@
-var cols = 8;
-var rows = 8;
+var cols = 3;
+var rows = 3;
 var tileSize = 32;
 var offset = 1.5;
 
@@ -12,6 +12,8 @@ var activeTile1;
 var activeTile2;
 var swapCompleted = false;
 var backgroundImage;
+var particles = [];
+var hintTile = [];
 
 class Board {
   constructor(sketch) {
@@ -43,7 +45,6 @@ class Board {
       this.resetTile();
       this.fillTile()
     }
-
   }
 
   drawBackgroundBox() {
@@ -179,6 +180,204 @@ class Board {
     }
   }
 
+  checkIfThereAreAvailableMoves() {
+    let matches = [];
+    let groups = [];
+    
+    //makes sure there are no null cells
+    for (var i = 0; i < grid.length; i++) {
+      //Loop through each tile in column from bottom to top
+      for (var j = 0; j < grid.length; j++) {
+          if (!grid[i][j]){
+             return false; 
+          }
+      } 
+    }
+
+    for (var i = 0; i < grid.length; i++) {
+      //Loop through each tile in column from bottom to top
+      for (var j = 0; j < grid.length; j++) {
+        
+        //horizontal
+        if (typeof grid[i][j] !== 'undefined' && typeof grid[i + 1] !== 'undefined' && typeof grid[i + 1][j] !== 'undefined') {
+          //two match horizontal next to each other
+          if (grid[i][j].kind == grid[i + 1][j].kind) {
+
+            //one move left up one move down
+            if (typeof grid[i][j] !== 'undefined' && typeof grid[i - 1] !== 'undefined' && typeof grid[i - 1][j + 1] !== 'undefined') {
+              if (grid[i][j].kind == grid[i - 1][j + 1].kind) {
+                if (groups.indexOf(grid[i - 1][j + 1]) == -1) {
+                  groups.push(grid[i - 1][j + 1]);
+                }
+              }
+            }
+
+            //one move left up one move up
+            if (typeof grid[i][j] !== 'undefined' && typeof grid[i - 1] !== 'undefined' && typeof grid[i - 1][j - 1] !== 'undefined') {
+              if (grid[i][j].kind == grid[i - 1][j - 1].kind) {
+                if (groups.indexOf(grid[i - 1][j - 1]) == -1) {
+                  groups.push(grid[i - 1][j - 1]);
+                }
+              }
+            }
+
+            //one move right one move up
+            if (typeof grid[i + 1] !== 'undefined' && typeof grid[i + 2] !== 'undefined' && typeof grid[i + 2][j - 1] !== 'undefined') {
+              if (grid[i + 1][j].kind == grid[i + 2][j - 1].kind) {
+                if (groups.indexOf(grid[i + 2][j - 1]) == -1) {
+                  groups.push(grid[i + 2][j - 1]);
+                }
+              }
+            }
+
+            //one move right one move down
+            if (typeof grid[i + 1] !== 'undefined' && typeof grid[i + 2] !== 'undefined' && typeof grid[i + 2][j + 1] !== 'undefined') {
+              if (grid[i + 1][j].kind == grid[i + 2][j + 1].kind) {
+                if (groups.indexOf(grid[i + 2][j + 1]) == -1) {
+                  groups.push(grid[i + 2][j + 1]);
+                }
+              }
+            }
+
+            //two moves right
+            if (typeof grid[i + 1][j] !== 'undefined' && typeof grid[i + 3] !== 'undefined' && typeof grid[i + 3][j] !== 'undefined') {
+              if (grid[i + 1][j].kind == grid[i + 3][j].kind) {
+                if (groups.indexOf(grid[i + 3][j]) == -1) {
+                  groups.push(grid[i + 3][j]);
+                }
+              }
+            }
+
+            //two moves left
+            if (typeof grid[i][j] !== 'undefined' && typeof grid[i - 2] !== 'undefined' && typeof grid[i - 2][j] !== 'undefined') {
+              if (grid[i][j].kind == grid[i - 2][j].kind) {
+                if (groups.indexOf(grid[i - 2][j]) == -1) {
+                  groups.push(grid[i - 2][j]);
+                }
+              }
+            }
+          }
+
+          //endif
+        }
+        
+         //one up between two same kind tiles horizontal
+         if (typeof grid[i][j] !== 'undefined' && typeof grid[i + 2] !== 'undefined' && typeof grid[i + 1][j - 1] !== 'undefined') {
+          if (grid[i][j].kind == grid[i + 2][j].kind) {
+            if (grid[i][j].kind == grid[i + 1][j - 1].kind) {
+              if (groups.indexOf(grid[i + 1][j - 1]) == -1) {
+                  groups.push(grid[i + 1][j - 1]);
+              }
+            }
+          }
+         }
+        
+        //one down between two same kind tiles horizontal
+        if (typeof grid[i][j] !== 'undefined' && typeof grid[i + 2] !== 'undefined' && typeof grid[i + 1][j + 1] !== 'undefined') {
+          if (grid[i][j].kind == grid[i + 2][j].kind) {
+            if (grid[i][j].kind == grid[i + 1][j + 1].kind) {
+              if (groups.indexOf(grid[i + 1][j + 1]) == -1) {
+                  groups.push(grid[i + 1][j + 1]);
+              }
+            }
+          }
+         }
+
+        //vertical
+        if (typeof grid[i][j] !== 'undefined' && typeof grid[i][j + 1] !== 'undefined') {
+          //two match vertical next to each other
+          if (grid[i][j].kind == grid[i][j + 1].kind) {
+
+            //two moves down
+            if (typeof grid[i][j + 1] !== 'undefined' && typeof grid[i][j + 3] !== 'undefined') {
+              if (grid[i][j + 1].kind == grid[i][j + 3].kind) {
+                if (groups.indexOf(grid[i][j + 3]) == -1) {
+                  groups.push(grid[i][j + 3]);
+                }
+              }
+            }
+
+            //two moves up
+            if (typeof grid[i][j] !== 'undefined' && typeof grid[i][j - 2] !== 'undefined') {
+              if (grid[i][j].kind == grid[i][j - 2].kind) {
+                if (groups.indexOf(grid[i][j - 2]) == -1) {
+                  groups.push(grid[i][j - 2]);
+                }
+              }
+            }
+
+            //one move up one move left
+            if (typeof grid[i][j] !== 'undefined' && typeof grid[i - 1] !== 'undefined' && typeof grid[i - 1][j - 1] !== 'undefined') {
+              if (grid[i][j].kind == grid[i - 1][j - 1].kind) {
+                if (groups.indexOf(grid[i - 1][j - 1]) == -1) {
+                  groups.push(grid[i - 1][j - 1]);
+                }
+              }
+            }
+
+            //one move up one move right
+            if (typeof grid[i][j] !== 'undefined' && typeof grid[i + 1] !== 'undefined' && typeof grid[i + 1][j - 1] !== 'undefined') {
+              if (grid[i][j].kind == grid[i + 1][j - 1].kind) {
+                if (groups.indexOf(grid[i + 1][j - 1]) == -1) {
+                  groups.push(grid[i + 1][j - 1]);
+                }
+              }
+            }
+
+            //one move down one move left
+            if (typeof grid[i][j + 1] !== 'undefined' && typeof grid[i - 1] !== 'undefined' && typeof grid[i - 1][j + 2] !== 'undefined') {
+              if (grid[i][j + 1].kind == grid[i - 1][j + 2].kind) {
+                if (groups.indexOf(grid[i - 1][j + 2]) == -1) {
+                  groups.push(grid[i - 1][j + 2]);
+                }
+              }
+            }
+
+            //one move down one move right
+            if (typeof grid[i][j + 1] !== 'undefined' && typeof grid[i + 1] !== 'undefined' && typeof grid[i + 1][j + 2] !== 'undefined') {
+              if (grid[i][j + 1].kind == grid[i + 1][j + 2].kind) {
+                if (groups.indexOf(grid[i + 1][j + 2]) == -1) {
+                  groups.push(grid[i + 1][j + 2]);
+                }
+              }
+            }
+
+            //end 2 match
+          }
+
+          //endif
+        }
+        
+         //one right between two same kind tiles vertical
+         if (typeof grid[i][j] !== 'undefined' && typeof grid[i + 1] !== 'undefined' && typeof grid[i][j + 2] !== 'undefined' && typeof grid[i + 1][j + 1] !== 'undefined') {
+          if (grid[i][j].kind == grid[i][j + 2].kind) {
+            if (grid[i][j].kind == grid[i + 1][j + 1].kind) {
+              if (groups.indexOf(grid[i + 1][j + 1]) == -1) {
+                  groups.push(grid[i + 1][j + 1]);
+              }
+            }
+          }
+         }
+        
+        //one left between two same kind tiles vertical
+        if (typeof grid[i][j] !== 'undefined' && typeof grid[i - 1] !== 'undefined' && typeof grid[i][j + 2] !== 'undefined' && typeof grid[i - 1][j - 1] !== 'undefined') {
+          if (grid[i][j].kind == grid[i][j + 2].kind) {
+            if (grid[i][j].kind == grid[i - 1][j - 1].kind) {
+              if (groups.indexOf(grid[i - 1][j - 1]) == -1) {
+                  groups.push(grid[i - 1][j - 1]);
+              }
+            }
+          }
+         }
+
+        //endfor
+      }
+      //endfor  
+    }
+
+    return groups;
+  }
+
   resetTile() {
     //Loop through each column starting from the left
     for (var i = 0; i < grid.length; i++) {
@@ -278,7 +477,7 @@ class Board {
 
           if (hitPiece) {
             grid[i][j].clicked = true;
-
+            
             clickedPieces.push(grid[i][j]);
             exitLoop = true;
             break;
@@ -300,6 +499,7 @@ class Board {
         this.swapPieces(clickedPieces[0], clickedPieces[1]);
       }
 
+      this.resetHint();
       clickedPieces = [];
     }
 
@@ -322,6 +522,25 @@ class Board {
         //scoreSpan.html(prevScore + 1);
       }
     }
+  }
+  
+  showHint(){
+    let availableMoves = this.checkIfThereAreAvailableMoves();
+    
+    if (availableMoves.length > 0)
+    {
+      let piece =  availableMoves[0];
+      
+      grid[piece.col][piece.row].isHint = true;
+      hintTile = grid[piece.col][piece.row];
+    }
+  }
+  
+  resetHint(){
+     if (hintTile && typeof grid[hintTile.col] !== 'undefined' && typeof grid[hintTile.col][hintTile.row] !== 'undefined'){
+        grid[hintTile.col][hintTile.row].isHint = false; 
+        hintTile = [];
+     }
   }
 
   getGrid() {

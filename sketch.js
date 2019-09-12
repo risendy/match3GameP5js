@@ -21,10 +21,8 @@ const sketch = (p) => {
 
     p.rectMode(p.CORNER);
 
-    board = new Board(this);
-    
-    //p.image(backgroundImg, 0, 16);
-    
+    game = new Game(this);
+      
     backgroundBoxImage.resize(150, 425);
     p.image(backgroundBoxImage, 0, 15); 
 
@@ -36,11 +34,20 @@ const sketch = (p) => {
     goBackButton.position(33, 360);
     goBackButton.mousePressed(p.goBackToMenu);
     goBackButton.class('btn-circle-menu');
+    
+    goBackButton = p.createButton('Hint');
+    goBackButton.position(33, 280);
+    goBackButton.mousePressed(p.showHint);
+    goBackButton.class('btn-circle-menu');
 
     p.frameRate(30);
   }
+  
+  p.showHint = function(){
+    game.showHint();
+  }
 
-  p.draw = function() {
+  p.draw = function() {   
     p.fill(0);
 
     p.push();
@@ -53,11 +60,12 @@ const sketch = (p) => {
 
     p.pop();
 
-    board.show();
+    game.showBoard();
+    game.checkIfGameActive();
   }
 
   p.mouseClicked = function() {
-    board.mouseClicked();
+    game.mouseClicked();
   }
 
   p.goBackToMenu = function() {
@@ -86,6 +94,11 @@ const welcomeScreen = (p) => {
     ClassicModeButton = p.createButton('Classical');
     ClassicModeButton.position(70, p.height / 2 - 20);
     ClassicModeButton.mousePressed(p.startClassicalMode);
+    ClassicModeButton.class('btn-circle');
+    
+    ClassicModeButton = p.createButton('Zen');
+    ClassicModeButton.position(230, p.height / 2 - 20);
+    ClassicModeButton.mousePressed(p.startZenMode);
     ClassicModeButton.class('btn-circle');
 
     backgroundImg.resize(600,400);
@@ -127,6 +140,12 @@ const welcomeScreen = (p) => {
   p.startClassicalMode = function() {
     p.remove();
     activeMode = 1;
+    new p5(sketch);
+  }
+  
+  p.startZenMode = function() {
+    p.remove();
+    activeMode = 2;
     new p5(sketch);
   }
 }

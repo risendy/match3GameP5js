@@ -17,6 +17,7 @@ class Piece {
     this.counter = 0;
     this.clicked = false;
     this.moving = false;
+    this.isHint = false;
 
     this.piece1 = this.sketch.loadImage('assets/img/element_yellow_diamond.png');
     this.piece2 = this.sketch.loadImage('assets/img/element_blue_polygon.png');
@@ -97,29 +98,6 @@ class Piece {
         if (this.y > this.yTo) this.y=this.yTo
       }
     }
-
-//     while (this.canMove()) {
-//       grid[this.col][this.row + 1] = this;
-//       grid[this.col][this.row] = null;
-     
-//       //this.yTo = this.y + 32;
-//       this.y = this.y + 32;
-//       this.row++;
-
-//       this.moving = true;
-//     }
-  }
-
-  canMove() {
-    if (this.row + 1 == rows) {
-      this.moving = false;
-      
-      return false;
-    }
-
-    if (grid[this.col][this.row + 1] == null) {
-      return true;
-    }
   }
 
   show() {
@@ -131,8 +109,12 @@ class Piece {
       this.sketch.pop();
     }
     
-    if (this.moving == false){
-       //board.checkMatches();
+    if (this.isHint) {
+      this.sketch.push();
+      this.sketch.noFill();
+      this.sketch.stroke('red');
+      this.sketch.rect(this.x * offset, this.y * offset, 32 * offset, 32 * offset);
+      this.sketch.pop();
     }
 
     if (grid[this.col][this.row]) {
