@@ -1,5 +1,5 @@
-var cols = 3;
-var rows = 3;
+var cols = 8;
+var rows = 8;
 var tileSize = 32;
 var offset = 1.5;
 
