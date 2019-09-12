@@ -7,7 +7,7 @@
 * [Screenshots](#screenshots)
 
 ## General info
-Match-3 game made using p5.js
+Match-3 game made using p5.js. You can play it here: https://risendy.github.io/match3GameP5js/
 
 ## Technologies
 Project is created with:
