@@ -10,6 +10,8 @@ let piece4;
 let piece5;
 let piece6;
 var scoreElem;
+var timer;
+var timer2;
 
 const sketch = (p) => {
   p.preload = function() {
@@ -39,6 +41,11 @@ const sketch = (p) => {
     goBackButton.position(33, 280);
     goBackButton.mousePressed(p.showHint);
     goBackButton.class('btn-circle-menu');
+    
+    shufflingElem = p.createDiv('Shuffling');
+    shufflingElem.position(15, 200);
+    shufflingElem.class('shuffling-span');
+    shufflingElem.hide();
 
     p.frameRate(30);
   }
@@ -61,7 +68,11 @@ const sketch = (p) => {
     p.pop();
 
     game.showBoard();
-    game.checkIfGameActive();
+    
+    if (p.millis() - timer >= 2000) {
+      game.checkIfGameActive();
+      timer = p.millis();
+    }
   }
 
   p.mouseClicked = function() {

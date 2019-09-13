@@ -60,4 +60,9 @@ canvas {
   font-family: 'Comic Sans MS';
   padding-left: 0px;
 }
-
+.shuffling-span{
+  color:white;
+  font-size: 26px;
+  font-family: 'Comic Sans MS';
+  padding-left: 5px;
+}

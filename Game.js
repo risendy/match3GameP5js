@@ -19,12 +19,11 @@ class Game {
 
     if (!moves) return false;
 
-    if (moves.length == 0) {
-      this.sketch.redraw();
-      
-      if (activeMode == 2) {
-        this.board.setupGrid();
+    if (moves.length == 0) {     
+      if (activeMode == 2) {   
+        shufflingElem.show();
         
+        this.board.setupGrid();
       } else {
         isActive = false;
 
@@ -37,6 +36,10 @@ class Game {
         this.sketch.text('Game over', 15, 225);
         this.sketch.pop();
       }
+    }
+    else
+    {
+       shufflingElem.hide(); 
     }
 
   }
